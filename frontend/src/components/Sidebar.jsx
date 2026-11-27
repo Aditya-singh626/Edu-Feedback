@@ -16,7 +16,10 @@ export default function Sidebar({
         <div className="w-9 h-9 bg-indigo-600 rounded-lg flex items-center justify-center text-lg text-white shadow-md shadow-indigo-600/30">
           <i className="fa-solid fa-graduation-cap"></i>
         </div>
-        <h2 className="text-base font-bold text-white tracking-tight">{brandTitle}</h2>
+        <div>
+          <h2 className="text-base font-bold text-white tracking-tight">{brandTitle}</h2>
+          <span className="text-[11px] text-indigo-300 font-medium block">ABESEC Ghaziabad</span>
+        </div>
       </div>
 
       <div className="p-5 text-center border-b border-slate-800/80">

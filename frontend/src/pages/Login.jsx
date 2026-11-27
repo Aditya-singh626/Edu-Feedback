@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { loginUser } from '../utils/storage';
 import { DEMO_QUICK_ACCOUNTS, DEMO_USERS } from '../utils/mockData';
 import Alert from '../components/Alert';
+import Header from '../components/Header';
+import Footer from '../components/Footer';
 
 export default function Login({ onLoginSuccess }) {
   const [message, setMessage] = useState(null);
@@ -47,13 +49,7 @@ export default function Login({ onLoginSuccess }) {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-gradient-to-br from-indigo-50 via-slate-50 to-blue-50">
-      <div className="text-center mb-6 max-w-md">
-        <div className="w-14 h-14 bg-indigo-600 text-white rounded-2xl flex items-center justify-center text-2xl mx-auto mb-4 shadow-lg shadow-indigo-500/25">
-          <i className="fa-solid fa-graduation-cap"></i>
-        </div>
-        <h1 className="text-3xl font-bold text-slate-900 mb-1.5 tracking-tight">Faculty Feedback System</h1>
-        <p className="text-sm text-slate-500">Provide your valuable feedback to help elevate educational excellence</p>
-      </div>
+      <Header />
 
       <div className="w-full max-w-lg bg-white rounded-2xl shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden">
         <div className="p-8">
@@ -167,9 +163,7 @@ export default function Login({ onLoginSuccess }) {
         </div>
       </div>
 
-      <footer className="mt-8 text-center text-xs text-slate-400">
-        <p>&copy; {new Date().getFullYear()} Faculty Feedback System. All Rights Reserved.</p>
-      </footer>
+      <Footer className="mt-8" />
     </div>
   );
 }

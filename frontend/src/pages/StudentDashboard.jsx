@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Sidebar from "../components/Sidebar";
 import { StarRatingInput } from "../components/StarRating";
 import Alert from "../components/Alert";
+import Footer from "../components/Footer";
 import {
   getFacultiesList,
   getCoursesForFaculty,
@@ -185,16 +186,20 @@ export default function StudentDashboard({ user, onLogout, onUpdateUser }) {
         brandTitle="EduFeedback"
       />
 
-      <main className="flex-1 md:ml-64 p-4 sm:p-6 lg:p-8 min-h-screen bg-slate-50">
-        <header className="mb-6 pb-4 border-b border-slate-200">
-          <div>
-            <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Student Dashboard</h1>
-            <p className="text-sm text-slate-500 mt-1">
-              Welcome back, <strong>{user?.name || "Student"}</strong>! Submit
-              feedback and review your submissions.
-            </p>
-          </div>
-        </header>
+      <main className="flex-1 md:ml-64 p-4 sm:p-6 lg:p-8 min-h-screen bg-slate-50 flex flex-col justify-between">
+        <div>
+          <header className="mb-6 pb-4 border-b border-slate-200">
+            <div>
+              <div className="text-xs font-semibold uppercase tracking-wider text-indigo-600 mb-0.5">
+                ABESEC Ghaziabad
+              </div>
+              <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Student Dashboard</h1>
+              <p className="text-sm text-slate-500 mt-1">
+                Welcome back, <strong>{user?.name || "Student"}</strong>! Submit
+                feedback and review your submissions.
+              </p>
+            </div>
+          </header>
 
         {alert && (
           <Alert
@@ -517,6 +522,9 @@ export default function StudentDashboard({ user, onLogout, onUpdateUser }) {
             </form>
           </section>
         )}
+        </div>
+
+        <Footer className="mt-12 pt-6 border-t border-slate-200" />
       </main>
     </div>
   );
