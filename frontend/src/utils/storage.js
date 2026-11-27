@@ -1,7 +1,5 @@
 import { DEMO_FACULTIES, DEMO_COURSES, DEMO_USERS, DEMO_FEEDBACK } from './mockData';
 
-const API_BASE = '/api';
-
 export function initializeStorage() {
   if (!localStorage.getItem('faculties')) {
     localStorage.setItem('faculties', JSON.stringify(DEMO_FACULTIES));
@@ -34,39 +32,18 @@ export function setCurrentUser(user) {
   }
 }
 
+/**
+ * Purely simulated backend login using frontend mockData and localStorage
+ */
 export async function loginUser(email, password, userType) {
   initializeStorage();
-  
-  // Try backend API first
-  try {
-    const response = await fetch(`${API_BASE}/auth/login`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password, userType })
-    });
-    if (response.ok) {
-      const data = await response.json();
-      const user = {
-        userId: data.userId,
-        name: data.name,
-        email: data.email,
-        userType: data.userType,
-        department: data.department,
-        title: data.title,
-        token: data.token,
-        isLoggedIn: true
-      };
-      setCurrentUser(user);
-      return { success: true, user };
-    }
-  } catch (err) {
-    // Backend offline or network error, fallback to local storage
-  }
 
-  // Local storage fallback for seamless offline / demo operation
+  // Simulate network response latency
+  await new Promise(resolve => setTimeout(resolve, 300));
+
   const users = JSON.parse(localStorage.getItem('users') || '[]');
   const user = users.find(
-    u => u.email.toLowerCase() === email.toLowerCase() &&
+    u => u.email.toLowerCase() === (email || '').trim().toLowerCase() &&
          u.password === password &&
          u.userType === userType
   );
@@ -79,6 +56,7 @@ export async function loginUser(email, password, userType) {
       userType: user.userType,
       department: user.department || 'General',
       title: user.title || (user.userType === 'faculty' ? 'Faculty Member' : ''),
+      token: 'simulated-token-' + Math.random().toString(36).substring(2),
       isLoggedIn: true
     };
     setCurrentUser(sessionUser);
@@ -88,62 +66,7 @@ export async function loginUser(email, password, userType) {
   return { success: false, message: 'Invalid email, password, or user role.' };
 }
 
-export async function registerUser({ name, email, password, userType, department, title, year }) {
-  initializeStorage();
-
-  // Try backend
-  try {
-    const res = await fetch(`${API_BASE}/auth/register`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, email, password, userType, department, title, year })
-    });
-    if (!res.ok) {
-      const errData = await res.json().catch(() => ({}));
-      if (errData.error === 'Email already registered') {
-        return { success: false, message: 'Email already registered.' };
-      }
-    }
-  } catch (err) {
-    // Proceed with local storage
-  }
-
-  const users = JSON.parse(localStorage.getItem('users') || '[]');
-  if (users.some(u => u.email.toLowerCase() === email.toLowerCase())) {
-    return { success: false, message: 'Email already registered.' };
-  }
-
-  const newUser = {
-    id: 'u-' + Date.now(),
-    name,
-    email,
-    password,
-    userType,
-    department: department || 'General',
-    title: title || (userType === 'faculty' ? 'Assistant Professor' : ''),
-    year: year || '1st Year',
-    createdAt: new Date().toISOString()
-  };
-
-  users.push(newUser);
-  localStorage.setItem('users', JSON.stringify(users));
-
-  return { success: true, message: 'Registration successful! You can now log in.' };
-}
-
 export async function logoutUser() {
-  const current = getCurrentUser();
-  if (current && current.token) {
-    try {
-      await fetch(`${API_BASE}/auth/logout`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ token: current.token })
-      });
-    } catch (e) {
-      // ignore
-    }
-  }
   setCurrentUser(null);
 }
 
@@ -175,25 +98,6 @@ export async function submitStudentFeedback(feedbackData) {
 
   allFeedback.unshift(newFeedback);
   localStorage.setItem('feedback', JSON.stringify(allFeedback));
-
-  // Sync with backend if available
-  try {
-    await fetch(`${API_BASE}/feedback`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        studentId: feedbackData.studentId || 1,
-        facultyId: feedbackData.facultyId,
-        courseId: feedbackData.courseId,
-        teachingRating: feedbackData.ratings.teaching,
-        communicationRating: feedbackData.ratings.communication,
-        helpfulnessRating: feedbackData.ratings.helpfulness,
-        comments: feedbackData.comments
-      })
-    });
-  } catch (e) {
-    // offline is ok
-  }
 
   return { success: true, feedback: newFeedback };
 }

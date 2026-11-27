@@ -38,7 +38,6 @@ export default function FacultyDashboard({ user, onLogout, onUpdateUser }) {
   const [savingProfile, setSavingProfile] = useState(false);
 
   useEffect(() => {
-    // Resolve faculty id by email or default to f1
     const faculties = getFacultiesList();
     const match = faculties.find(
       (f) =>
@@ -121,7 +120,7 @@ export default function FacultyDashboard({ user, onLogout, onUpdateUser }) {
   ];
 
   return (
-    <div className="dashboard-layout">
+    <div className="min-h-screen flex flex-col md:flex-row bg-slate-50">
       <Sidebar
         user={user}
         links={navLinks}
@@ -134,11 +133,11 @@ export default function FacultyDashboard({ user, onLogout, onUpdateUser }) {
         brandTitle="EduFeedback"
       />
 
-      <main className="dashboard-main-content">
-        <header className="dashboard-top-header">
-          <div className="header-titles">
-            <h1>Faculty Dashboard</h1>
-            <p className="welcome-tagline">
+      <main className="flex-1 md:ml-64 p-4 sm:p-6 lg:p-8 min-h-screen bg-slate-50">
+        <header className="mb-6 pb-4 border-b border-slate-200">
+          <div>
+            <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Faculty Dashboard</h1>
+            <p className="text-sm text-slate-500 mt-1">
               Welcome back, <strong>{user?.name || "Faculty Member"}</strong>!
               Explore student insights and course analytics.
             </p>
@@ -156,8 +155,8 @@ export default function FacultyDashboard({ user, onLogout, onUpdateUser }) {
         {/* Tab 1: View Feedback */}
         {activeTab === "feedback" && (
           <div>
-            <div className="privacy-banner">
-              <i className="fa-solid fa-shield-halved"></i>
+            <div className="bg-emerald-50 border border-emerald-200 border-l-4 border-l-emerald-500 rounded-lg p-3.5 flex items-center gap-3 mb-5 text-emerald-800 text-xs">
+              <i className="fa-solid fa-shield-halved text-lg text-emerald-600"></i>
               <div>
                 <strong>Student Privacy Protected:</strong>
                 <span>
@@ -168,11 +167,14 @@ export default function FacultyDashboard({ user, onLogout, onUpdateUser }) {
               </div>
             </div>
 
-            <div className="filters-card">
-              <div className="filter-item">
-                <label htmlFor="course-filter-select">Filter by Course:</label>
+            <div className="bg-white border border-slate-200 rounded-xl p-4 mb-5 flex flex-wrap gap-4">
+              <div className="flex-1 min-w-[200px]">
+                <label htmlFor="course-filter-select" className="block text-xs font-semibold text-slate-600 mb-1.5">
+                  Filter by Course:
+                </label>
                 <select
                   id="course-filter-select"
+                  className="w-full rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs text-slate-800 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
                   value={courseFilter}
                   onChange={(e) => setCourseFilter(e.target.value)}
                 >
@@ -185,10 +187,13 @@ export default function FacultyDashboard({ user, onLogout, onUpdateUser }) {
                 </select>
               </div>
 
-              <div className="filter-item">
-                <label htmlFor="date-filter-select">Time Period:</label>
+              <div className="flex-1 min-w-[200px]">
+                <label htmlFor="date-filter-select" className="block text-xs font-semibold text-slate-600 mb-1.5">
+                  Time Period:
+                </label>
                 <select
                   id="date-filter-select"
+                  className="w-full rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs text-slate-800 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
                   value={dateFilter}
                   onChange={(e) => setDateFilter(e.target.value)}
                 >
@@ -199,68 +204,68 @@ export default function FacultyDashboard({ user, onLogout, onUpdateUser }) {
               </div>
             </div>
 
-            <div className="stats-metric-grid">
-              <div className="metric-card">
-                <h4>Teaching Quality</h4>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+              <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm flex flex-col justify-between">
+                <h4 className="text-xs font-medium text-slate-500 mb-2">Teaching Quality</h4>
                 <StarDisplay rating={stats.teachingAvg} size="large" />
-                <span className="metric-count-label">
+                <span className="text-[11px] text-slate-400 mt-2 block">
                   Based on {stats.feedbackCount} reviews
                 </span>
               </div>
 
-              <div className="metric-card">
-                <h4>Communication</h4>
+              <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm flex flex-col justify-between">
+                <h4 className="text-xs font-medium text-slate-500 mb-2">Communication</h4>
                 <StarDisplay rating={stats.communicationAvg} size="large" />
-                <span className="metric-count-label">
+                <span className="text-[11px] text-slate-400 mt-2 block">
                   Based on {stats.feedbackCount} reviews
                 </span>
               </div>
 
-              <div className="metric-card">
-                <h4>Helpfulness & Mentoring</h4>
+              <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm flex flex-col justify-between">
+                <h4 className="text-xs font-medium text-slate-500 mb-2">Helpfulness & Mentoring</h4>
                 <StarDisplay rating={stats.helpfulnessAvg} size="large" />
-                <span className="metric-count-label">
+                <span className="text-[11px] text-slate-400 mt-2 block">
                   Based on {stats.feedbackCount} reviews
                 </span>
               </div>
 
-              <div className="metric-card highlight-card">
-                <h4>Overall Evaluation</h4>
+              <div className="bg-white border border-slate-200 border-t-4 border-t-indigo-600 rounded-xl p-5 shadow-sm flex flex-col justify-between">
+                <h4 className="text-xs font-medium text-slate-500 mb-2">Overall Evaluation</h4>
                 <StarDisplay rating={stats.overallAvg} size="large" />
-                <span className="metric-count-label">
+                <span className="text-[11px] text-slate-400 mt-2 block">
                   Cumulative score across 7 metrics
                 </span>
               </div>
             </div>
 
-            <section className="dashboard-card comments-card-wrapper">
-              <div className="card-section-header">
-                <h2>
+            <section className="bg-white rounded-xl p-6 shadow-sm border border-slate-200/80 mb-6">
+              <div className="mb-5 pb-3 border-b border-slate-100">
+                <h2 className="text-lg font-semibold text-slate-900">
                   Anonymous Student Comments ({stats.anonymousComments.length})
                 </h2>
-                <p className="section-desc">
+                <p className="text-xs text-slate-500 mt-1">
                   Qualitative observations and suggestions submitted by your
                   students.
                 </p>
               </div>
 
               {stats.anonymousComments.length === 0 ? (
-                <div className="empty-state-box">
-                  <i className="fa-regular fa-comment-slash empty-icon"></i>
-                  <p>
+                <div className="text-center py-10 px-4 bg-slate-50 border border-dashed border-slate-300 rounded-xl">
+                  <i className="fa-regular fa-comment-slash text-4xl text-slate-300 mb-3 block"></i>
+                  <p className="text-xs text-slate-500">
                     No qualitative comments available for the selected filters.
                   </p>
                 </div>
               ) : (
-                <div className="comments-stream">
+                <div className="space-y-3.5">
                   {stats.anonymousComments.map((comm, idx) => (
-                    <div key={idx} className="comment-quote-card">
-                      <p className="comment-body">"{comm.text}"</p>
-                      <div className="comment-metadata">
-                        <span className="meta-course-pill">
+                    <div key={idx} className="bg-slate-50 border border-slate-200 rounded-xl p-4">
+                      <p className="italic text-sm text-slate-700 mb-2">"{comm.text}"</p>
+                      <div className="flex justify-between items-center text-xs">
+                        <span className="bg-slate-200 text-slate-800 px-2 py-0.5 rounded text-[11px] font-medium">
                           {comm.courseName}
                         </span>
-                        <span className="meta-date">{comm.date}</span>
+                        <span className="text-slate-400">{comm.date}</span>
                       </div>
                     </div>
                   ))}
@@ -272,15 +277,15 @@ export default function FacultyDashboard({ user, onLogout, onUpdateUser }) {
 
         {/* Tab 2: My Courses */}
         {activeTab === "courses" && (
-          <section className="dashboard-card">
-            <div className="card-section-header">
-              <h2>My Assigned Courses</h2>
-              <p className="section-desc">
+          <section className="bg-white rounded-xl p-6 shadow-sm border border-slate-200/80 mb-6">
+            <div className="mb-5 pb-3 border-b border-slate-100">
+              <h2 className="text-lg font-semibold text-slate-900">My Assigned Courses</h2>
+              <p className="text-xs text-slate-500 mt-1">
                 Overview of your active lecture modules and feedback volume.
               </p>
             </div>
 
-            <div className="courses-grid">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
               {courses.map((course) => {
                 const courseFeedback = getFacultyFeedbackSummary(
                   facultyId,
@@ -288,23 +293,23 @@ export default function FacultyDashboard({ user, onLogout, onUpdateUser }) {
                   "all",
                 );
                 return (
-                  <div key={course.id} className="course-profile-card">
-                    <div className="course-badge">{course.code}</div>
-                    <h3>{course.name}</h3>
-                    <div className="course-stats-row">
-                      <div className="course-stat">
-                        <span className="stat-label">Enrolled:</span>
-                        <span className="stat-value">40+</span>
+                  <div key={course.id} className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm flex flex-col">
+                    <div className="self-start bg-indigo-50 text-indigo-700 font-semibold text-xs px-2.5 py-0.5 rounded mb-2.5">{course.code}</div>
+                    <h3 className="text-base font-semibold text-slate-800 mb-3 flex-1">{course.name}</h3>
+                    <div className="flex justify-between py-2 border-y border-slate-100 my-2.5">
+                      <div className="flex flex-col text-xs">
+                        <span className="text-slate-400">Enrolled:</span>
+                        <span className="font-semibold text-slate-800">40+</span>
                       </div>
-                      <div className="course-stat">
-                        <span className="stat-label">Feedback:</span>
-                        <span className="stat-value">
+                      <div className="flex flex-col text-xs">
+                        <span className="text-slate-400">Feedback:</span>
+                        <span className="font-semibold text-slate-800">
                           {courseFeedback.feedbackCount}
                         </span>
                       </div>
-                      <div className="course-stat">
-                        <span className="stat-label">Avg:</span>
-                        <span className="stat-value">
+                      <div className="flex flex-col text-xs">
+                        <span className="text-slate-400">Avg:</span>
+                        <span className="font-semibold text-slate-800">
                           {courseFeedback.overallAvg}★
                         </span>
                       </div>
@@ -312,7 +317,7 @@ export default function FacultyDashboard({ user, onLogout, onUpdateUser }) {
 
                     <button
                       type="button"
-                      className="btn btn-outline btn-block mt-3"
+                      className="w-full inline-flex items-center justify-center gap-2 px-4 py-2 bg-white text-slate-700 border border-slate-300 hover:bg-slate-50 hover:border-slate-400 text-xs font-medium rounded-lg transition mt-3 cursor-pointer"
                       onClick={() => {
                         setCourseFilter(course.id);
                         setActiveTab("feedback");
@@ -330,76 +335,81 @@ export default function FacultyDashboard({ user, onLogout, onUpdateUser }) {
 
         {/* Tab 3: My Profile */}
         {activeTab === "profile" && (
-          <section className="dashboard-card max-w-700">
-            <div className="card-section-header">
-              <h2>Faculty Profile Details</h2>
-              <p className="section-desc">
+          <section className="bg-white rounded-xl p-6 shadow-sm border border-slate-200/80 mb-6 max-w-2xl">
+            <div className="mb-5 pb-3 border-b border-slate-100">
+              <h2 className="text-lg font-semibold text-slate-900">Faculty Profile Details</h2>
+              <p className="text-xs text-slate-500 mt-1">
                 Keep your academic title and department affiliation up to date.
               </p>
             </div>
 
-            <form onSubmit={handleProfileSubmit} className="profile-edit-form">
-              <div className="form-group">
-                <label htmlFor="fac-name">Full Name</label>
+            <form onSubmit={handleProfileSubmit} className="space-y-4">
+              <div>
+                <label htmlFor="fac-name" className="block text-sm font-medium text-slate-700 mb-1.5">Full Name</label>
                 <input
                   id="fac-name"
                   type="text"
+                  className="w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-sm text-slate-800 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 transition"
                   value={profileName}
                   onChange={(e) => setProfileName(e.target.value)}
                   required
                 />
               </div>
 
-              <div className="form-group">
-                <label htmlFor="fac-email">Email Address</label>
+              <div>
+                <label htmlFor="fac-email" className="block text-sm font-medium text-slate-700 mb-1.5">Email Address</label>
                 <input
                   id="fac-email"
                   type="email"
                   value={user?.email || ""}
                   disabled
-                  className="input-disabled"
+                  className="w-full rounded-lg border border-slate-300 bg-slate-100 px-3.5 py-2 text-sm text-slate-400 cursor-not-allowed"
                 />
               </div>
 
-              <div className="form-group">
-                <label htmlFor="fac-dept">Department</label>
+              <div>
+                <label htmlFor="fac-dept" className="block text-sm font-medium text-slate-700 mb-1.5">Department</label>
                 <input
                   id="fac-dept"
                   type="text"
+                  className="w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-sm text-slate-800 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 transition"
                   value={profileDept}
                   onChange={(e) => setProfileDept(e.target.value)}
                 />
               </div>
 
-              <div className="form-group">
-                <label htmlFor="fac-title">Academic Title / Rank</label>
+              <div>
+                <label htmlFor="fac-title" className="block text-sm font-medium text-slate-700 mb-1.5">Academic Title / Rank</label>
                 <input
                   id="fac-title"
                   type="text"
                   placeholder="e.g. Associate Professor"
+                  className="w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-sm text-slate-800 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 transition"
                   value={profileTitle}
                   onChange={(e) => setProfileTitle(e.target.value)}
                 />
               </div>
 
-              <div className="password-update-box">
-                <h3>Change Account Password</h3>
-                <div className="form-group">
-                  <label htmlFor="fac-current-pw">Current Password</label>
+              <div className="my-5 p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-3">
+                <h3 className="text-sm font-semibold text-slate-800">Change Account Password</h3>
+                <div>
+                  <label htmlFor="fac-current-pw" className="block text-xs font-medium text-slate-600 mb-1">Current Password</label>
                   <input
                     id="fac-current-pw"
                     type="password"
                     placeholder="Enter current password"
+                    className="w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-sm text-slate-800 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 transition"
                     value={currentPassword}
                     onChange={(e) => setCurrentPassword(e.target.value)}
                   />
                 </div>
-                <div className="form-group">
-                  <label htmlFor="fac-new-pw">New Password</label>
+                <div>
+                  <label htmlFor="fac-new-pw" className="block text-xs font-medium text-slate-600 mb-1">New Password</label>
                   <input
                     id="fac-new-pw"
                     type="password"
                     placeholder="Enter new password"
+                    className="w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-sm text-slate-800 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 transition"
                     value={newPassword}
                     onChange={(e) => setNewPassword(e.target.value)}
                   />
@@ -408,7 +418,7 @@ export default function FacultyDashboard({ user, onLogout, onUpdateUser }) {
 
               <button
                 type="submit"
-                className="btn btn-primary"
+                className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white font-medium text-sm rounded-lg shadow-sm hover:shadow transition cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                 disabled={savingProfile}
               >
                 {savingProfile ? "Saving..." : "Update Faculty Profile"}

@@ -4,7 +4,6 @@ import StudentDashboard from './pages/StudentDashboard';
 import FacultyDashboard from './pages/FacultyDashboard';
 import AdminDashboard from './pages/AdminDashboard';
 import { getCurrentUser, logoutUser, initializeStorage } from './utils/storage';
-import './App.css';
 
 export default function App() {
   const [currentUser, setCurrentUser] = useState(null);
@@ -34,8 +33,8 @@ export default function App() {
 
   if (!initialized) {
     return (
-      <div className="app-loading-screen">
-        <div className="spinner"></div>
+      <div className="min-h-screen flex flex-col items-center justify-center gap-3 bg-slate-50 text-slate-500 text-sm">
+        <div className="w-10 h-10 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin"></div>
         <p>Loading Faculty Feedback System...</p>
       </div>
     );

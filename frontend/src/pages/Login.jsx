@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
-import { loginUser, registerUser } from '../utils/storage';
+import { loginUser } from '../utils/storage';
 import { DEMO_QUICK_ACCOUNTS, DEMO_USERS } from '../utils/mockData';
 import Alert from '../components/Alert';
 
 export default function Login({ onLoginSuccess }) {
-  const [activeTab, setActiveTab] = useState('login'); // 'login' or 'register'
-  const [message, setMessage] = useState(null); // { type, text }
+  const [message, setMessage] = useState(null);
   const [loading, setLoading] = useState(false);
 
   // Login form state
@@ -13,20 +12,13 @@ export default function Login({ onLoginSuccess }) {
   const [loginPassword, setLoginPassword] = useState('');
   const [loginUserType, setLoginUserType] = useState('student');
 
-  // Register form state
-  const [regName, setRegName] = useState('');
-  const [regEmail, setRegEmail] = useState('');
-  const [regPassword, setRegPassword] = useState('');
-  const [regUserType, setRegUserType] = useState('student');
-  const [regDepartment, setRegDepartment] = useState('');
-
   const handleQuickLogin = (account) => {
     setLoginEmail(account.email);
     setLoginPassword(account.password);
     setLoginUserType(account.userType);
     setMessage({
       type: 'info',
-      text: `Demo account selected (${account.label || account.name}). Click "Login" to continue.`
+      text: `Demo account selected (${account.label || account.name}). Click "Sign In" to continue.`
     });
   };
 
@@ -48,81 +40,23 @@ export default function Login({ onLoginSuccess }) {
     } else {
       setMessage({
         type: 'error',
-        text: result.message || 'Invalid credentials. Try a demo account or register a new one.'
+        text: result.message || 'Invalid credentials. Please select or enter a valid demo account.'
       });
     }
   };
 
-  const handleRegisterSubmit = async (e) => {
-    e.preventDefault();
-    setMessage(null);
-
-    if (!regName || !regEmail || !regPassword) {
-      setMessage({ type: 'error', text: 'Please fill in all required fields.' });
-      return;
-    }
-
-    setLoading(true);
-    const result = await registerUser({
-      name: regName,
-      email: regEmail,
-      password: regPassword,
-      userType: regUserType,
-      department: regDepartment
-    });
-    setLoading(false);
-
-    if (result.success) {
-      setMessage({ type: 'success', text: result.message });
-      // Clear registration form and switch to login
-      setLoginEmail(regEmail);
-      setLoginPassword(regPassword);
-      setLoginUserType(regUserType);
-      setActiveTab('login');
-      setRegName('');
-      setRegEmail('');
-      setRegPassword('');
-      setRegDepartment('');
-    } else {
-      setMessage({ type: 'error', text: result.message });
-    }
-  };
-
   return (
-    <div className="auth-page-wrapper">
-      <div className="auth-header">
-        <div className="brand-icon-large">
+    <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-gradient-to-br from-indigo-50 via-slate-50 to-blue-50">
+      <div className="text-center mb-6 max-w-md">
+        <div className="w-14 h-14 bg-indigo-600 text-white rounded-2xl flex items-center justify-center text-2xl mx-auto mb-4 shadow-lg shadow-indigo-500/25">
           <i className="fa-solid fa-graduation-cap"></i>
         </div>
-        <h1>Faculty Feedback System</h1>
-        <p>Provide your valuable feedback to help elevate educational excellence</p>
+        <h1 className="text-3xl font-bold text-slate-900 mb-1.5 tracking-tight">Faculty Feedback System</h1>
+        <p className="text-sm text-slate-500">Provide your valuable feedback to help elevate educational excellence</p>
       </div>
 
-      <div className="auth-card">
-        <div className="auth-tabs">
-          <button
-            type="button"
-            className={`auth-tab-btn ${activeTab === 'login' ? 'active' : ''}`}
-            onClick={() => {
-              setActiveTab('login');
-              setMessage(null);
-            }}
-          >
-            Login
-          </button>
-          <button
-            type="button"
-            className={`auth-tab-btn ${activeTab === 'register' ? 'active' : ''}`}
-            onClick={() => {
-              setActiveTab('register');
-              setMessage(null);
-            }}
-          >
-            Register
-          </button>
-        </div>
-
-        <div className="auth-body">
+      <div className="w-full max-w-lg bg-white rounded-2xl shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden">
+        <div className="p-8">
           {message && (
             <Alert
               type={message.type}
@@ -131,171 +65,109 @@ export default function Login({ onLoginSuccess }) {
             />
           )}
 
-          {activeTab === 'login' ? (
-            <form onSubmit={handleLoginSubmit} className="auth-form">
-              <div className="demo-accounts-box">
-                <div className="demo-header">
-                  <i className="fa-solid fa-bolt"></i>
-                  <strong>Quick Login with Demo Accounts:</strong>
-                </div>
-                <div className="demo-pills">
-                  {DEMO_QUICK_ACCOUNTS.map((acc, idx) => (
-                    <button
-                      key={idx}
-                      type="button"
-                      className="demo-pill-btn"
-                      onClick={() => handleQuickLogin(acc)}
-                    >
-                      {acc.label}
-                    </button>
-                  ))}
-                </div>
-                <div className="demo-select-row">
-                  <label htmlFor="all-demo-select">Or choose any demo account:</label>
-                  <select
-                    id="all-demo-select"
-                    onChange={(e) => {
-                      const found = DEMO_USERS.find(u => u.email === e.target.value);
-                      if (found) handleQuickLogin(found);
-                    }}
-                    defaultValue=""
+          <form onSubmit={handleLoginSubmit} className="space-y-4">
+            <div className="bg-amber-50/70 border border-amber-200 rounded-xl p-4 mb-5">
+              <div className="flex items-center gap-2 text-xs font-semibold text-amber-900 mb-2.5">
+                <i className="fa-solid fa-bolt text-amber-500"></i>
+                <strong>Quick Login with Demo Accounts:</strong>
+              </div>
+              <div className="flex flex-wrap gap-2 mb-3">
+                {DEMO_QUICK_ACCOUNTS.map((acc, idx) => (
+                  <button
+                    key={idx}
+                    type="button"
+                    className="bg-white border border-slate-200 hover:border-indigo-500 hover:bg-indigo-600 hover:text-white rounded-md px-2.5 py-1 text-xs font-medium text-slate-700 transition shadow-sm cursor-pointer"
+                    onClick={() => handleQuickLogin(acc)}
                   >
-                    <option value="" disabled>-- Select demo user --</option>
-                    {DEMO_USERS.map((u) => (
-                      <option key={u.email} value={u.email}>
-                        [{u.userType.toUpperCase()}] {u.name} ({u.department || 'N/A'})
-                      </option>
-                    ))}
-                  </select>
-                </div>
+                    {acc.label}
+                  </button>
+                ))}
               </div>
-
-              <div className="form-group">
-                <label htmlFor="login-email">Email Address</label>
-                <div className="input-with-icon">
-                  <i className="fa-regular fa-envelope"></i>
-                  <input
-                    id="login-email"
-                    type="email"
-                    placeholder="e.g. alice.johnson@example.com"
-                    value={loginEmail}
-                    onChange={(e) => setLoginEmail(e.target.value)}
-                    required
-                  />
-                </div>
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="login-password">Password</label>
-                <div className="input-with-icon">
-                  <i className="fa-solid fa-lock"></i>
-                  <input
-                    id="login-password"
-                    type="password"
-                    placeholder="Enter password"
-                    value={loginPassword}
-                    onChange={(e) => setLoginPassword(e.target.value)}
-                    required
-                  />
-                </div>
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="user-type">I am logging in as:</label>
+              <div className="flex flex-col gap-1 text-xs text-slate-500">
+                <label htmlFor="all-demo-select">Or choose any demo account:</label>
                 <select
-                  id="user-type"
-                  value={loginUserType}
-                  onChange={(e) => setLoginUserType(e.target.value)}
+                  id="all-demo-select"
+                  className="text-xs py-1.5 px-2.5 rounded-lg border border-slate-200 bg-white text-slate-700 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                  onChange={(e) => {
+                    const found = DEMO_USERS.find(u => u.email === e.target.value);
+                    if (found) handleQuickLogin(found);
+                  }}
+                  defaultValue=""
                 >
-                  <option value="student">Student</option>
-                  <option value="faculty">Faculty Member</option>
-                  <option value="admin">Administrator</option>
+                  <option value="" disabled>-- Select demo user --</option>
+                  {DEMO_USERS.map((u) => (
+                    <option key={u.email} value={u.email}>
+                      [{u.userType.toUpperCase()}] {u.name} ({u.department || 'N/A'})
+                    </option>
+                  ))}
                 </select>
               </div>
+            </div>
 
-              <button type="submit" className="btn btn-primary btn-block" disabled={loading}>
-                {loading ? 'Logging in...' : 'Sign In'}
-              </button>
-            </form>
-          ) : (
-            <form onSubmit={handleRegisterSubmit} className="auth-form">
-              <div className="form-group">
-                <label htmlFor="reg-name">Full Name</label>
-                <div className="input-with-icon">
-                  <i className="fa-regular fa-user"></i>
-                  <input
-                    id="reg-name"
-                    type="text"
-                    placeholder="Enter full name"
-                    value={regName}
-                    onChange={(e) => setRegName(e.target.value)}
-                    required
-                  />
-                </div>
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="reg-email">Email Address</label>
-                <div className="input-with-icon">
-                  <i className="fa-regular fa-envelope"></i>
-                  <input
-                    id="reg-email"
-                    type="email"
-                    placeholder="Enter institutional email"
-                    value={regEmail}
-                    onChange={(e) => setRegEmail(e.target.value)}
-                    required
-                  />
-                </div>
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="reg-password">Password</label>
-                <div className="input-with-icon">
-                  <i className="fa-solid fa-lock"></i>
-                  <input
-                    id="reg-password"
-                    type="password"
-                    placeholder="Create a strong password"
-                    value={regPassword}
-                    onChange={(e) => setRegPassword(e.target.value)}
-                    required
-                  />
-                </div>
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="reg-type">Register As:</label>
-                <select
-                  id="reg-type"
-                  value={regUserType}
-                  onChange={(e) => setRegUserType(e.target.value)}
-                >
-                  <option value="student">Student</option>
-                  <option value="faculty">Faculty</option>
-                </select>
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="reg-dept">Department</label>
+            <div>
+              <label htmlFor="login-email" className="block text-sm font-medium text-slate-700 mb-1.5">
+                Email Address
+              </label>
+              <div className="relative flex items-center">
+                <i className="fa-regular fa-envelope absolute left-3.5 text-slate-400 text-sm pointer-events-none"></i>
                 <input
-                  id="reg-dept"
-                  type="text"
-                  placeholder="e.g. Computer Science, Mathematics"
-                  value={regDepartment}
-                  onChange={(e) => setRegDepartment(e.target.value)}
+                  id="login-email"
+                  type="email"
+                  placeholder="e.g. alice.johnson@example.com"
+                  className="w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 pl-10 text-sm text-slate-800 placeholder-slate-400 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 transition"
+                  value={loginEmail}
+                  onChange={(e) => setLoginEmail(e.target.value)}
+                  required
                 />
               </div>
+            </div>
 
-              <button type="submit" className="btn btn-primary btn-block" disabled={loading}>
-                {loading ? 'Registering...' : 'Create Account'}
-              </button>
-            </form>
-          )}
+            <div>
+              <label htmlFor="login-password" className="block text-sm font-medium text-slate-700 mb-1.5">
+                Password
+              </label>
+              <div className="relative flex items-center">
+                <i className="fa-solid fa-lock absolute left-3.5 text-slate-400 text-sm pointer-events-none"></i>
+                <input
+                  id="login-password"
+                  type="password"
+                  placeholder="Enter password"
+                  className="w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 pl-10 text-sm text-slate-800 placeholder-slate-400 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 transition"
+                  value={loginPassword}
+                  onChange={(e) => setLoginPassword(e.target.value)}
+                  required
+                />
+              </div>
+            </div>
+
+            <div>
+              <label htmlFor="user-type" className="block text-sm font-medium text-slate-700 mb-1.5">
+                I am logging in as:
+              </label>
+              <select
+                id="user-type"
+                className="w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-800 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 transition"
+                value={loginUserType}
+                onChange={(e) => setLoginUserType(e.target.value)}
+              >
+                <option value="student">Student</option>
+                <option value="faculty">Faculty Member</option>
+                <option value="admin">Administrator</option>
+              </select>
+            </div>
+
+            <button
+              type="submit"
+              className="w-full py-2.5 px-4 bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white font-semibold rounded-lg shadow-sm hover:shadow transition duration-150 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer mt-2"
+              disabled={loading}
+            >
+              {loading ? 'Logging in...' : 'Sign In'}
+            </button>
+          </form>
         </div>
       </div>
 
-      <footer className="auth-footer">
+      <footer className="mt-8 text-center text-xs text-slate-400">
         <p>&copy; {new Date().getFullYear()} Faculty Feedback System. All Rights Reserved.</p>
       </footer>
     </div>
